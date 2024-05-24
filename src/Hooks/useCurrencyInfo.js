@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 
-
-
 function useCurrencyInfo(currency) {
 
     const [data, setData] = useState({})
 
-    const url = `https://currencyconverter9.p.rapidapi.com/fetch-all?from=${currency}`;
     const options = {
         method: 'GET',
         headers: {
@@ -14,16 +11,20 @@ function useCurrencyInfo(currency) {
             'x-rapidapi-host': 'currencyconverter9.p.rapidapi.com'
         }
     };
-    
+
+
 
     useEffect(() => {
-        fetch(url, options)
-            .then((res) => res.json())
-            .then((res) => setData(res[currency]))
-            console.log(data);
-    }, [currency])
 
-    return data
+        fetch(`https://currencyconverter9.p.rapidapi.com/fetch-all?from=${currency}`, options)
+            .then(response => response.json())
+            .then(response => setData(response))
+            .catch(err => console.error(err));
+    }, [currency]);
+
+
+
+    return data.results
 }
 
 export default useCurrencyInfo;
