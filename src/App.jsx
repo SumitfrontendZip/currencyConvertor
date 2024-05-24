@@ -9,22 +9,22 @@ function App() {
   const [to, setTo] = useState('inr')
   const [convertedAmount, setConvertedAmount] = useState(0)
 
-  const currencyInfo = useCurrencyInfo('AED')
-  console.log(currencyInfo);
-  const options =  Object.keys(currencyInfo)
-  console.log(options);
-
+  const { data: currencyInfo, loading } = useCurrencyInfo(from)
+  const options = currencyInfo ? Object.keys(currencyInfo) : []
 
   const swap = () => {
     setFrom(to)
     setTo(from)
-    setConvertedAmount(amount)
     setAmount(convertedAmount)
+    setConvertedAmount(amount)
   }
 
   const convert = () => {
-    setConvertedAmount(amount * currencyInfo[to])
+    if (!loading && currencyInfo && currencyInfo[to]) {
+      setConvertedAmount(amount * currencyInfo[to])
+    }
   }
+
 
   return (
     <div
@@ -82,4 +82,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
