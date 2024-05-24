@@ -32,7 +32,6 @@ function useCurrencyInfo(currency) {
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
     }, [currency]);
-    console.log(data);
     return { data, error, loading };
 }
 
