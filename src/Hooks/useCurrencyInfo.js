@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 function useCurrencyInfo(currency) {
 
-    const [data, setData] = useState({})
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const options = {
         method: 'GET',
@@ -12,19 +14,26 @@ function useCurrencyInfo(currency) {
         }
     };
 
-
-
     useEffect(() => {
+        if (!currency) return;
 
+        setLoading(true);
         fetch(`https://currencyconverter9.p.rapidapi.com/fetch-all?from=${currency}`, options)
-            .then(response => response.json())
-            .then(response => setData(response))
-            .catch(err => console.error(err));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching data: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(response => {
+                setData(response.results);
+                setError(null);
+            })
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
     }, [currency]);
 
-
-
-    return data.results
+    return { data, error, loading };
 }
 
 export default useCurrencyInfo;
